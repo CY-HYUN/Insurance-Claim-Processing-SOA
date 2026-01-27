@@ -1,0 +1,36 @@
+# GraphQL Schema for Insurance Policy Service
+
+type Query {
+  # Get a single policy by ID
+  policy(policyId: String!): Policy
+
+  # Get all policies for a user
+  policiesByUser(userId: String!): [Policy!]!
+
+  # Get all policies
+  allPolicies: [Policy!]!
+
+  # Validate policy for claim amount
+  validatePolicy(policyId: String!, claimAmount: Float!): ValidationResult!
+}
+
+type Policy {
+  policyId: String!
+  userId: String!
+  policyType: String!
+  status: String!
+  coverageAmount: Float!
+  premium: Float!
+  startDate: String!
+  endDate: String!
+  isActive: Boolean!
+}
+
+type ValidationResult {
+  policyId: String!
+  isValid: Boolean!
+  status: String!
+  message: String!
+  validationErrors: [String!]!
+  coverageLimit: Float!
+}

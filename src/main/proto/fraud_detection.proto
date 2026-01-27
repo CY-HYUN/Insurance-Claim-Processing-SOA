@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.insurance.grpc.proto";
+option java_outer_classname = "FraudDetectionProto";
+
+package frauddetection;
+
+// Fraud Detection Service
+service FraudDetection {
+  // Analyze claim for potential fraud
+  rpc AnalyzeClaim (FraudRequest) returns (FraudResponse) {}
+
+  // Get fraud detection statistics
+  rpc GetStatistics (StatisticsRequest) returns (StatisticsResponse) {}
+}
+
+// Request message for fraud analysis
+message FraudRequest {
+  string claim_id = 1;
+  string user_id = 2;
+  double claim_amount = 3;
+  string claim_type = 4;
+  string incident_date = 5;
+  string user_history = 6;  // Previous claim history
+}
+
+// Response message for fraud analysis
+message FraudResponse {
+  string claim_id = 1;
+  bool is_fraudulent = 2;
+  double risk_score = 3;  // 0.0 to 1.0
+  string risk_level = 4;  // LOW, MEDIUM, HIGH, CRITICAL
+  string explanation = 5;
+  repeated string red_flags = 6;  // List of detected issues
+  string recommendation = 7;  // APPROVE, MANUAL_REVIEW, REJECT
+}
+
+// Request for fraud detection statistics
+message StatisticsRequest {
+  string time_period = 1;  // e.g., "LAST_30_DAYS"
+}
+
+// Response with fraud detection statistics
+message StatisticsResponse {
+  int32 total_claims_analyzed = 1;
+  int32 fraud_detected = 2;
+  double fraud_rate = 3;
+  int64 total_amount_saved = 4;
+}

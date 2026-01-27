@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <display-name>Insurance Claim Processing - SOA</display-name>
+
+    <!-- REST API - Jersey Servlet -->
+    <servlet>
+        <servlet-name>Jersey REST Service</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>com.insurance.service</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Jersey REST Service</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- GraphQL Servlet -->
+    <servlet>
+        <servlet-name>GraphQL</servlet-name>
+        <servlet-class>com.insurance.graphql.GraphQLServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GraphQL</servlet-name>
+        <url-pattern>/graphql</url-pattern>
+    </servlet-mapping>
+
+    <!-- SOAP Web Service - JAX-WS -->
+    <servlet>
+        <servlet-name>JAX-WS Servlet</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JAX-WS Servlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+
+    <listener>
+        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+    </listener>
+
+    <!-- Welcome file -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

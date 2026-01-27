@@ -1,0 +1,47 @@
+# Build outputs
+/bin/
+/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE settings (개인 설정, 팀원과 공유 불필요)
+.idea/
+.vscode/
+*.iml
+.settings/
+.project
+.classpath
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+nul
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*~
+
+# Personal recovery notes (내부 기록용, 공유 불필요)
+RECOVERY_SUMMARY.md
+DOCUMENTATION_RECOVERY_COMPLETE.md
+프로젝트_최종_분석_및_계획.md
+docs/requirements
+
+# Environment variables (보안)
+.env
+*.env
+
+# Package files
+*.zip
+
+# 개인 메모 (필요시 추가)
+# notes/
+# private/

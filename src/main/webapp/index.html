@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Claim Processing - SOA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            font-size: 1em;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .endpoint {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .status {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .status h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .documentation {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .documentation h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .documentation ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .documentation li {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .documentation li:hover {
+            background: #e9ecef;
+        }
+
+        .documentation a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .documentation a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Insurance Claim Processing</h1>
+        <p class="subtitle">Service Oriented Architecture (SOA) Project</p>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <h2>REST</h2>
+                <p>Claim Submission Service</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    Primary interface for submitting insurance claims
+                </p>
+                <div class="endpoint">
+                    POST /api/claims/submit
+                </div>
+            </div>
+
+            <div class="service-card">
+                <h2>SOAP</h2>
+                <p>Identity Verification</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    XML-based service for user identity verification
+                </p>
+                <div class="endpoint">
+                    verifyIdentity()
+                </div>
+            </div>
+
+            <div class="service-card">
+                <h2>gRPC</h2>
+                <p>Fraud Detection</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    High-performance fraud analysis using Protocol Buffers
+                </p>
+                <div class="endpoint">
+                    localhost:50051
+                </div>
+            </div>
+
+            <div class="service-card">
+                <h2>GraphQL</h2>
+                <p>Policy Validation</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    Flexible policy queries and validation
+                </p>
+                <div class="endpoint">
+                    POST /graphql
+                </div>
+            </div>
+        </div>
+
+        <div class="status">
+            <h3>Service Status</h3>
+            <div class="status-item">
+                <span class="status-label">REST API</span>
+                <span class="status-value">✓ Running</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">GraphQL</span>
+                <span class="status-value">✓ Running</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">SOAP Service</span>
+                <span class="status-value">✓ Available</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">gRPC Server</span>
+                <span class="status-value">⚠ Check Separately</span>
+            </div>
+        </div>
+
+        <div class="documentation">
+            <h3>API Endpoints</h3>
+            <ul>
+                <li>
+                    <a href="/claim-processing/api/claims/health" target="_blank">
+                        REST Health Check → /api/claims/health
+                    </a>
+                </li>
+                <li>
+                    <a href="/claim-processing/graphql" target="_blank">
+                        GraphQL Endpoint → /graphql
+                    </a>
+                </li>
+                <li>
+                    gRPC Server → localhost:50051 (start separately)
+                </li>
+                <li>
+                    SOAP Service → Use Java client or SoapUI
+                </li>
+            </ul>
+        </div>
+
+        <div class="documentation" style="margin-top: 20px;">
+            <h3>Documentation</h3>
+            <ul>
+                <li>📖 README → docs/readme.txt</li>
+                <li>📮 Postman Collection → docs/API_Documentation/</li>
+                <li>🔧 Build Script → build-and-deploy.bat</li>
+                <li>🎮 Demo Script → run-demo.bat</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Service Oriented Computing Project</p>
+            <p>Télécom SudParis | January 2026</p>
+        </div>
+    </div>
+</body>
+</html>

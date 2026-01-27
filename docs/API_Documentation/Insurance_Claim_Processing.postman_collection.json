@@ -1,0 +1,254 @@
+{
+  "info": {
+    "name": "Insurance Claim Processing - SOA",
+    "description": "API collection for testing Insurance Claim Processing services (REST, SOAP, gRPC, GraphQL)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "REST - Claim Submission",
+      "item": [
+        {
+          "name": "Submit Claim - Low Risk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claimId\": \"CLM-001\",\n  \"userId\": \"USR-123\",\n  \"claimType\": \"AUTO\",\n  \"claimAmount\": 5000.0,\n  \"description\": \"Minor car accident on highway\",\n  \"incidentDate\": \"2024-01-15\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/api/claims/submit",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "api", "claims", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Submit Claim - Medium Risk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claimId\": \"CLM-002\",\n  \"userId\": \"USR-456\",\n  \"claimType\": \"ACCIDENT\",\n  \"claimAmount\": 75000.0,\n  \"description\": \"Major accident claim\",\n  \"incidentDate\": \"2024-01-10\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/api/claims/submit",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "api", "claims", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Submit Claim - High Risk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claimId\": \"CLM-003\",\n  \"userId\": \"USR-789\",\n  \"claimType\": \"ACCIDENT\",\n  \"claimAmount\": 150000.0,\n  \"description\": \"Very high value claim - suspicious\",\n  \"incidentDate\": \"2024-01-05\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/api/claims/submit",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "api", "claims", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Get Claim Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/api/claims/CLM-001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "api", "claims", "CLM-001"]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/api/claims/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "api", "claims", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GraphQL - Policy Validation",
+      "item": [
+        {
+          "name": "Get Policy by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { policy(policyId: \\\"POL-001\\\") { policyId userId policyType status coverageAmount premium isActive } }\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get Policies by User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { policiesByUser(userId: \\\"USR-123\\\") { policyId policyType status coverageAmount isActive } }\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        },
+        {
+          "name": "Validate Policy - Valid Claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query ValidatePolicy($policyId: String!, $claimAmount: Float!) { validatePolicy(policyId: $policyId, claimAmount: $claimAmount) { policyId isValid status message validationErrors coverageLimit } }\",\n  \"variables\": {\n    \"policyId\": \"POL-001\",\n    \"claimAmount\": 30000.0\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        },
+        {
+          "name": "Validate Policy - Exceeds Coverage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query ValidatePolicy($policyId: String!, $claimAmount: Float!) { validatePolicy(policyId: $policyId, claimAmount: $claimAmount) { policyId isValid status message validationErrors coverageLimit } }\",\n  \"variables\": {\n    \"policyId\": \"POL-001\",\n    \"claimAmount\": 75000.0\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        },
+        {
+          "name": "Validate Policy - Inactive",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query ValidatePolicy($policyId: String!, $claimAmount: Float!) { validatePolicy(policyId: $policyId, claimAmount: $claimAmount) { policyId isValid status message validationErrors coverageLimit } }\",\n  \"variables\": {\n    \"policyId\": \"POL-003\",\n    \"claimAmount\": 25000.0\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        },
+        {
+          "name": "Get All Policies",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { allPolicies { policyId userId policyType status coverageAmount premium startDate endDate isActive } }\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/claim-processing/graphql",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["claim-processing", "graphql"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
