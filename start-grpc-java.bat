@@ -10,7 +10,7 @@ REM Set Java 11 path
 set JAVA_HOME=C:\Program Files\Microsoft\jdk-11.0.16.101-hotspot
 set PATH=%JAVA_HOME%\bin;%PATH%
 
-cd /d "D:\Study\Github\TSP\Service Oriented Computing\Project\Insurance-Claim-Processing-SOA"
+cd /d "D:\Study\Github\Insurance-Claim-Processing-SOA"
 
 REM Set classpath
 set CLASSPATH=target\classes;target\claim-processing\WEB-INF\classes

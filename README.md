@@ -141,7 +141,21 @@ Edit these batch files and set your Tomcat installation path:
 set TOMCAT_HOME=C:\apache-tomcat-9.0.89
 ```
 
-### 2. Build the Project
+### 2. Compile Classes (Required for Demo)
+
+**⚠️ Important: Run this first to avoid ClassNotFoundException!**
+
+```bash
+compile-classes.bat
+```
+
+This will:
+- Clean previous builds
+- Compile all Java sources with Maven
+- Generate gRPC classes from .proto files
+- Create compiled classes in `target/classes/`
+
+**Or build complete WAR file:**
 
 ```bash
 build-and-deploy.bat
@@ -152,6 +166,41 @@ This will:
 - Generate gRPC classes from .proto files
 - Package WAR file
 - Deploy to Tomcat (if configured)
+
+**Alternative: Compile with IntelliJ IDEA Maven**
+
+If Maven is not in your system PATH or you encounter Korean username encoding issues:
+
+1. Open the project in IntelliJ IDEA
+2. Configure Java SDK:
+   - File → Project Structure → Project
+   - Set SDK to Java 11 (e.g., Microsoft OpenJDK 11.0.16)
+   - Set Language level to 11
+3. Open Maven tool window (View → Tool Windows → Maven, or right sidebar)
+4. Expand "Lifecycle" node
+5. Execute Maven goals in order:
+   - Double-click **"clean"** → Wait for completion
+   - Double-click **"compile"** → Compiles Java sources and generates gRPC classes
+   - Double-click **"package"** → Creates WAR file with all dependencies in `target/claim-processing.war`
+
+**Maven Settings for Korean Username Fix:**
+
+If you encounter encoding issues with Korean characters in username (e.g., `C:\Users\현창용\.m2\repository`):
+
+1. Create `settings.xml` in project root:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
+    <localRepository>D:/maven-repository</localRepository>
+</settings>
+```
+
+2. In IntelliJ IDEA:
+   - File → Settings → Build, Execution, Deployment → Build Tools → Maven
+   - User settings file: Point to your `settings.xml`
+   - Local repository: `D:/maven-repository` (ASCII-only path)
+
+This configures Maven to use an ASCII-only repository path, avoiding encoding issues.
 
 ### 3. Start Services
 
