@@ -45,6 +45,7 @@ This folder contains all project documentation organized by category.
 | `Service_Endpoints.md` | Complete API endpoint reference | API Consumers |
 | `Testing_Guide.md` | Testing procedures and test cases | QA, Developers |
 | `Project_Implementation_Plan.md` | Implementation details and timeline | Project Managers |
+| `Tech_Stack.md` | Complete technology stack and dependencies | Developers, Architects |
 
 **Usage:** Reference material for understanding, deploying, and maintaining the system.
 
@@ -111,9 +112,10 @@ This folder contains all project documentation organized by category.
 
 ### **For Developers (Future Maintenance):**
 1. Understand: `technical-docs/Architecture_Overview.md` - System design
-2. Deploy: `technical-docs/Deployment_Guide.md` - Setup instructions
-3. Test: `technical-docs/Testing_Guide.md` - Test procedures
-4. API Reference: `technical-docs/Service_Endpoints.md` - Endpoint documentation
+2. Tech Stack: `technical-docs/Tech_Stack.md` - Complete technology overview
+3. Deploy: `technical-docs/Deployment_Guide.md` - Setup instructions
+4. Test: `technical-docs/Testing_Guide.md` - Test procedures
+5. API Reference: `technical-docs/Service_Endpoints.md` - Endpoint documentation
 
 ---
 
@@ -123,20 +125,21 @@ This folder contains all project documentation organized by category.
 |----------|-------|------------|---------|
 | Professor Submission | 2 | ~45 KB | Grading materials |
 | Presentation | 3 | ~38 KB | Live demo scripts |
-| Technical Docs | 5 | ~132 KB | Developer reference |
+| Technical Docs | 6 | ~145 KB | Developer reference |
 | Requirements | 2 | ~7 KB | Course requirements |
 | API Documentation | 1 | ~15 KB | API testing |
 | Archive | 1 | ~9 KB | Historical records |
-| **Total** | **14 files** | **~246 KB** | Complete documentation |
+| **Total** | **15 files** | **~259 KB** | Complete documentation |
 
 ---
 
 ## 🔗 Related Files Outside docs/
 
 - **Root README.md** - Project overview and quick start
-- **pom.xml** - Maven build configuration
+- **pom.xml** - Maven build configuration (20 dependencies)
 - **src/** - Source code (23 Java files)
 - **16 .bat files** - Automation scripts for Windows
+- **Tech Stack:** JAX-WS, gRPC, GraphQL, Derby DB, Protobuf, Maven
 
 ---
 
