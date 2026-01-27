@@ -332,32 +332,42 @@ and explore all available queries, mutations, and types interactively."
 
 ```
 === Running REST Client ===
+=== Testing REST Service ===
 
 [출력이 나타남 - Terminal 3 화면 유지]
 
 "Finally, the REST service orchestrates the complete workflow.
 
-Watch carefully how it calls all three services in sequence.
+[출력 상단을 가리키며]
+You can see the claim submission:
+Claim ID is C-L-M dash R-E-S-T dash zero-zero-one,
+and the Amount is five thousand dollars.
 
-[Step 1 출력을 가리키며]
-Step 1 is SOAP Identity Verification.
-You can see the green checkmark - Identity verified successfully.
+[Response 섹션을 가리키며]
+Now looking at the Response section, let me explain what happened behind the scenes.
 
-[Step 2 출력을 가리키며]
-Step 2 is gRPC Fraud Detection.
-The fraud check passed with Risk Level: LOW.
-Another green checkmark here.
+The Status is APPROVED.
+The Message states: Claim approved successfully.
 
-[Step 3 출력을 가리키며]
-Step 3 is GraphQL Policy Validation.
-Policy validated successfully - third green checkmark.
+Now, these three fields show the results from our three backend services:
 
-[최종 결과를 가리키며]
-And here's the final result:
-CLAIM APPROVED - All validation checks passed.
-You can see the complete claim details including
-User ID, Policy ID, Claim Amount five thousand dollars,
-and the orchestrated results from all three services.
+[Identity Verified를 가리키며]
+Identity Verified shows 'true'.
+This means the SOAP Identity Verification Service successfully verified the customer.
+
+[Fraud Check Passed를 가리키며]
+Fraud Check Passed shows 'true'.
+This means the gRPC Fraud Detection Service analyzed the claim
+and determined it was not fraudulent with LOW risk level.
+
+[Policy Status를 가리키며]
+Policy Status shows 'VALID'.
+This means the GraphQL Policy Validation Service confirmed
+the policy is active and covers this claim amount.
+
+All three validation checks passed,
+so the final Status is APPROVED.
+You can also see the Timestamp showing when this claim was processed.
 
 [30초 휴지]
 
