@@ -99,7 +99,7 @@ public class RestClient {
                     "CLM-REST-001",
                     "USR-123",
                     "AUTO",
-                    5000.0,
+                    500000.0,
                     "Car accident on highway",
                     "2024-01-15"
             );
