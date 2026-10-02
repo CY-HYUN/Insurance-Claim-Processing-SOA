@@ -427,11 +427,11 @@ netstat -ano | findstr :50051
 - [Service Endpoints](Service_Endpoints.md) - API specifications
 - [Testing Guide](Testing_Guide.md) - How to test all services
 - [Deployment Guide](Deployment_Guide.md) - Deployment instructions
-- [Postman Collection](API_Documentation/Insurance_Claim_Processing.postman_collection.json) - API tests
+- [Postman Collection](../API_Documentation/Insurance_Claim_Processing.postman_collection.json) - API tests
 
 ### Professor's Guidelines
-- [guideline.txt](guideline.txt) - Original project requirements
-- [guideline2.txt](guideline2.txt) - Professor's verbal instructions transcript
+- `guideline.txt` - Original project requirements
+- `guideline2.txt` - Professor's verbal instructions transcript
 
 ### Key Takeaways from Professor
 
