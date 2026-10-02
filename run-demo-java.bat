@@ -48,7 +48,7 @@ goto END
 :GRPC
 echo.
 echo === Running gRPC Client ===
-echo Make sure gRPC server is running (start-grpc-server.bat)
+echo Make sure gRPC server is running (start-grpc-java.bat)
 echo.
 pause
 java -cp "%CLASSPATH%" com.insurance.grpc.FraudDetectionClient

@@ -41,7 +41,7 @@ echo ✓ WAR file created
 echo.
 
 REM Check if Tomcat is set up
-set TOMCAT_HOME=C:\apache-tomcat-9.0.89
+set TOMCAT_HOME=C:\apache-tomcat-9.0.113
 if not exist "%TOMCAT_HOME%" (
     echo WARNING: Tomcat not found at %TOMCAT_HOME%
     echo Please set TOMCAT_HOME variable in this script

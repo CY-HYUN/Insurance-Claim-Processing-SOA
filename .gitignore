@@ -34,6 +34,7 @@ RECOVERY_SUMMARY.md
 DOCUMENTATION_RECOVERY_COMPLETE.md
 프로젝트_최종_분석_및_계획.md
 docs/requirements
+docs/presentation/LIVE_DEMO_GUIDE.md
 
 # Environment variables (보안)
 .env

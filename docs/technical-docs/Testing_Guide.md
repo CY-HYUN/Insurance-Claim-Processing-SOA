@@ -54,7 +54,7 @@ build-and-deploy.bat
 
 # 2. Start services
 start-tomcat.bat         # Terminal 1
-start-grpc-server.bat    # Terminal 2
+start-grpc-java.bat    # Terminal 2
 
 # 3. Run interactive demo
 run-demo.bat             # Terminal 3
@@ -586,14 +586,14 @@ Content-Type: text/xml
 ### 3. gRPC Service Testing
 
 **Prerequisites**:
-- ✅ gRPC server must be running (`start-grpc-server.bat`)
+- ✅ gRPC server must be running (`start-grpc-java.bat`)
 
 #### Test: Fraud Detection
 
 **Java Client** (Recommended):
 ```bash
 # Terminal 1: Start gRPC server
-start-grpc-server.bat
+start-grpc-java.bat
 
 # Terminal 2: Run test
 mvn exec:java -Dexec.mainClass="com.insurance.client.GrpcClient"
@@ -733,7 +733,7 @@ curl -X POST http://localhost:8080/claim-processing/graphql \
 
 **Prerequisites**:
 - ✅ Tomcat running (`start-tomcat.bat`)
-- ✅ gRPC server running (`start-grpc-server.bat`)
+- ✅ gRPC server running (`start-grpc-java.bat`)
 
 **Test Execution**:
 
@@ -869,7 +869,7 @@ netstat -ano | findstr :50051
 3. **Restart gRPC server**:
 ```bash
 # Close existing server (Ctrl+C)
-start-grpc-server.bat
+start-grpc-java.bat
 ```
 
 4. **Firewall check**:

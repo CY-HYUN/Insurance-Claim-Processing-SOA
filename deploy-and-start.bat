@@ -7,7 +7,7 @@ echo Insurance Claim Processing - Deploy and Start
 echo ================================================
 echo.
 
-set TOMCAT_HOME=C:\apache-tomcat-9.0.89
+set TOMCAT_HOME=C:\apache-tomcat-9.0.113
 
 REM Check if WAR file exists
 if not exist "target\claim-processing.war" (

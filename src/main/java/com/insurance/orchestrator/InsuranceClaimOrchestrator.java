@@ -43,7 +43,7 @@ public class InsuranceClaimOrchestrator {
             this.grpcClient = new FraudDetectionClient("localhost", 50051);
         } catch (Exception e) {
             System.err.println("Warning: gRPC server not available. Fraud detection will be skipped.");
-            System.err.println("Please start gRPC server using start-grpc-server.bat");
+            System.err.println("Please start gRPC server using start-grpc-java.bat");
             this.grpcClient = null;
         }
 

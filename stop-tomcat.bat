@@ -1,7 +1,7 @@
 @echo off
 REM Stop Tomcat Server
 
-set TOMCAT_HOME=C:\apache-tomcat-9.0.89
+set TOMCAT_HOME=C:\apache-tomcat-9.0.113
 
 if not exist "%TOMCAT_HOME%" (
     echo ERROR: Tomcat not found at %TOMCAT_HOME%

@@ -12,10 +12,8 @@ docs/
 │   ├── Service_Endpoints.md
 │   ├── Testing_Guide.md
 │   └── Project_Implementation_Plan.md
-├── API_Documentation/           # API testing resources
-│   └── Insurance_Claim_Processing.postman_collection.json
-└── presentation/                # Demo resources
-    └── LIVE_DEMO_GUIDE.md
+└── API_Documentation/           # API testing resources
+    └── Insurance_Claim_Processing.postman_collection.json
 ```
 
 ## 📚 Document Overview
@@ -51,15 +49,7 @@ docs/
 
 **[Insurance_Claim_Processing.postman_collection.json](API_Documentation/Insurance_Claim_Processing.postman_collection.json)**
 - Postman collection for REST and GraphQL testing
-- 12+ test requests with examples
-- Pre-configured environment variables
-
-### Presentation Materials
-
-**[LIVE_DEMO_GUIDE.md](presentation/LIVE_DEMO_GUIDE.md)**
-- Live demonstration script
-- Terminal commands for demo
-- Test scenario walkthroughs
+- 11 test requests with examples
 
 ## 🔗 Quick Links
 
@@ -82,7 +72,6 @@ docs/
 2. Follow [Deployment_Guide.md](technical-docs/Deployment_Guide.md) to set up the project
 3. Reference [Service_Endpoints.md](technical-docs/Service_Endpoints.md) for API details
 4. Use [Testing_Guide.md](technical-docs/Testing_Guide.md) to test services
-5. Check [LIVE_DEMO_GUIDE.md](presentation/LIVE_DEMO_GUIDE.md) for demonstration
 
 ---
 

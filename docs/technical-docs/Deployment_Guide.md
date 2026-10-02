@@ -182,7 +182,7 @@ Insurance-Claim-Processing-SOA/
 ├── build-and-deploy.bat             ✓ Build script
 ├── start-tomcat.bat                 ✓ Start script
 ├── stop-tomcat.bat                  ✓ Stop script
-├── start-grpc-server.bat            ✓ gRPC server script
+├── start-grpc-java.bat            ✓ gRPC server script
 └── docs/                            ✓ Documentation
 ```
 
@@ -318,7 +318,7 @@ Services available at:
 - SOAP: http://localhost:8080/claim-processing/soap/identity
 
 Next steps:
-1. Start gRPC server: start-grpc-server.bat
+1. Start gRPC server: start-grpc-java.bat
 2. Run tests: run-demo.bat
 
 ============================================
@@ -534,7 +534,7 @@ start-tomcat.bat
 
 **Terminal 2: Start gRPC Server**
 ```bash
-start-grpc-server.bat
+start-grpc-java.bat
 ```
 
 **Wait for**:
@@ -567,7 +567,7 @@ start-tomcat.bat
 #### Start gRPC Server Only
 
 ```bash
-start-grpc-server.bat
+start-grpc-java.bat
 ```
 
 **Services Available**:
@@ -1189,7 +1189,7 @@ build-and-deploy.bat
 
 # Start services
 start-tomcat.bat         # Terminal 1
-start-grpc-server.bat    # Terminal 2
+start-grpc-java.bat    # Terminal 2
 
 # Test
 run-demo.bat             # Terminal 3

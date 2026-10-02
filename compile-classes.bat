@@ -8,7 +8,7 @@ echo ================================================
 echo.
 
 REM Navigate to project directory
-cd /d "D:\Study\Github\Insurance-Claim-Processing-SOA"
+cd /d "%~dp0"
 
 REM Try common Maven locations
 set MAVEN_FOUND=0

@@ -1,624 +1,186 @@
-# Insurance Claim Processing - Service Oriented Architecture
+# Insurance Claim Processing — One Workflow, Four Protocols (REST + SOAP + gRPC + GraphQL)
 
-**End-to-End Insurance Claim Processing System with Multi-Protocol Service Integration**
+A Java 11 Service-Oriented Architecture demo: a single insurance-claim workflow orchestrated across **four service protocols**, with three XOR fail-fast gateways deciding APPROVED vs REJECTED.
 
-A comprehensive demonstration of Service Oriented Architecture implementing **four different communication protocols** for automated insurance claim processing. This project showcases professional-grade microservices design, workflow orchestration, and modern distributed system architecture.
+![Java](https://img.shields.io/badge/Java-11-orange)
+![Maven](https://img.shields.io/badge/Build-Maven-blue)
+![Protocols](https://img.shields.io/badge/Protocols-REST%20%7C%20SOAP%20%7C%20gRPC%20%7C%20GraphQL-green)
 
-## 🎯 Project Overview
+## Verified Results
 
-### Business Context
+- **4 protocols in one build**: REST (Jersey 2.35), SOAP (JAX-WS), gRPC (1.58.0 / Protobuf 3.24.0), GraphQL (graphql-java 19.2) — one Maven WAR on Tomcat plus a standalone gRPC server
+- **3 XOR gateways** (identity, fraud, policy) with early termination — one `POST` triggers the full pipeline
+- **17 Java source files, ~1,900 lines** (hand-written; gRPC stubs generated at build time), 50-line protobuf schema, 36-line GraphQL schema
+- **4 demo clients** (REST, SOAP, gRPC, GraphQL) plus a 263-line orchestrator
 
-An enterprise insurance platform offering a **digital service** that allows customers to submit, process, and track insurance claims through an automated workflow. The system orchestrates multiple microservices using different communication protocols to demonstrate SOA principles and modern distributed system patterns.
+Real output — one approved and one rejected claim through the same endpoint (captured from a live run):
 
-### Technology Highlights
-
-This project implements **4 core services** using **4 different service technologies**:
-
-- **REST (Jersey 2.35)** - Claim Submission Service with JSON
-- **SOAP (JAX-WS)** - Identity Verification Service with WSDL
-- **gRPC (1.58.0)** - Fraud Detection Service with Protocol Buffers
-- **GraphQL (19.2)** - Policy Validation Service with flexible queries
-
-**Additional Features:**
-- Complete workflow orchestration with XOR gateway logic
-- 4 Java application clients for service testing
-- Comprehensive API documentation (Postman, WSDL, Proto, GraphQL schema)
-- End-to-end demonstration with approval and rejection scenarios
-
-### Service Technology Selection Rationale
-
-| Service | Technology | Justification |
-|---------|-----------|---------------|
-| **Claim Submission** | REST (Jersey 2.35, JSON) | Lightweight, stateless, HTTP-based. Ideal for CRUD operations and web client integration. JSON format provides human-readable data exchange. |
-| **Identity Verification** | SOAP (JAX-WS, XML) | Enterprise-grade security with WS-Security support. Formal WSDL contract ensures strict type safety. Standard for banking/insurance identity verification. |
-| **Fraud Detection** | gRPC (Protocol Buffers) | High-performance binary protocol with low latency. Efficient for computation-intensive fraud analysis. Strongly-typed schema with backward compatibility. |
-| **Policy Validation** | GraphQL | Flexible query capabilities allowing clients to request exactly the data needed. Reduces over-fetching. Single endpoint for complex policy data relationships. |
-
-All services are orchestrated through `InsuranceClaimOrchestrator.java` to process insurance claims through a complete verification pipeline with **XOR gateway logic** for decision-based flow control.
-
-## 🏗️ System Architecture
-
-### High-Level Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Insurance Company Platform                   │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ Layer 1: Customer-Facing Services (REST)                 │  │
-│  │  ┌────────────────────────────────────────────────────┐  │  │
-│  │  │ Claim Submission Service (REST - Jersey 2.35)      │  │  │
-│  │  │ • POST /api/claims/submit                          │  │  │
-│  │  │ • GET /api/claims/{claimId}                        │  │  │
-│  │  │ • JSON Request/Response                            │  │  │
-│  │  └────────────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                              ↓                                    │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ Layer 2: Orchestration Layer (Java Application)         │  │
-│  │  ┌────────────────────────────────────────────────────┐  │  │
-│  │  │ InsuranceClaimOrchestrator.java                    │  │  │
-│  │  │ • Sequential Service Coordination                  │  │  │
-│  │  │ • XOR Gateway Logic Implementation                 │  │  │
-│  │  │ • Error Handling & Response Aggregation           │  │  │
-│  │  └────────────────────────────────────────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                              ↓                                    │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ Layer 3: Verification Services (Multi-Protocol)         │  │
-│  │                                                           │  │
-│  │  ┌─────────────────────────────────────────┐            │  │
-│  │  │ Identity Verification (SOAP - JAX-WS)   │            │  │
-│  │  │ • WSDL: /services/IdentityVerification  │            │  │
-│  │  │ • verifyIdentity(userId, name, docId)   │            │  │
-│  │  └─────────────────────────────────────────┘            │  │
-│  │                                                           │  │
-│  │  ┌─────────────────────────────────────────┐            │  │
-│  │  │ Fraud Detection (gRPC - Port 50051)     │            │  │
-│  │  │ • AnalyzeClaim(FraudRequest)            │            │  │
-│  │  │ • RiskAssessment: LOW/MEDIUM/HIGH       │            │  │
-│  │  └─────────────────────────────────────────┘            │  │
-│  │                                                           │  │
-│  │  ┌─────────────────────────────────────────┐            │  │
-│  │  │ Policy Validation (GraphQL)             │            │  │
-│  │  │ • POST /graphql                         │            │  │
-│  │  │ • validatePolicy(policyId, amount)      │            │  │
-│  │  └─────────────────────────────────────────┘            │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                              ↓                                    │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ Layer 4: Decision & Response                             │  │
-│  │  • XOR Gateway 1: Identity Failed → REJECT               │  │
-│  │  • XOR Gateway 2: High Fraud Risk → REJECT               │  │
-│  │  • XOR Gateway 3: Invalid Policy → REJECT                │  │
-│  │  • All Pass → APPROVE                                    │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Workflow Description
-
-**Complete Insurance Claim Processing Workflow:**
-
-1. **Claim Submission** (REST) - Customer submits claim with personal details, policy number, claim type, amount, description
-2. **Identity Verification** (SOAP) - Customer identity verified against database
-   - **XOR Gateway:** If verification fails → Claim REJECTED, customer notified
-3. **Fraud Detection** (gRPC) - Claim analyzed for fraud risk (LOW/MEDIUM/HIGH)
-   - **XOR Gateway:** If high risk detected → Claim REJECTED
-4. **Policy Validation** (GraphQL) - Insurance policy checked for validity and coverage
-   - **XOR Gateway:** If policy invalid or insufficient coverage → Claim REJECTED
-5. **Final Decision** - If all checks pass → Claim APPROVED
-6. **Customer Notification** - Customer informed of decision with detailed results
-
-**Gateway Implementation:**
-- **XOR Gateways** implemented as conditional logic in `InsuranceClaimOrchestrator.java`
-- **Sequential Execution:** Services called in order with early termination on failure
-- **Error Handling:** Comprehensive try-catch blocks with meaningful error messages
-
-## 📋 Prerequisites
-
-- Java Development Kit (JDK) 11+
-- Apache Maven 3.6+
-- Apache Tomcat 9.0+
-- Internet connection (for Maven dependencies)
-
-## 🚀 Quick Start
-
-### 1. Configure Tomcat Path
-
-Edit these batch files and set your Tomcat installation path:
-- `build-and-deploy.bat`
-- `start-tomcat.bat`
-- `stop-tomcat.bat`
-
-```batch
-set TOMCAT_HOME=C:\apache-tomcat-9.0.89
-```
-
-### 2. Build the Project
-
-**Option 1: Command Line (Maven)**
 ```bash
-compile-classes.bat
+$ curl -X POST http://localhost:8080/claim-processing/api/claims/submit \
+  -H "Content-Type: application/json" \
+  -d '{"claimId":"CLM-001","userId":"USR-123","claimType":"AUTO","claimAmount":5000.0,
+       "description":"Minor car accident","incidentDate":"2024-01-15"}'
+
+{"claimId":"CLM-001","fraudCheckPassed":true,"identityVerified":true,
+ "message":"Claim approved successfully","policyStatus":"VALID","status":"APPROVED",
+ "timestamp":"2026-07-02 12:32:02"}
+
+$ curl -X POST http://localhost:8080/claim-processing/api/claims/submit \
+  -H "Content-Type: application/json" \
+  -d '{"claimId":"CLM-002","userId":"USR-456","claimType":"ACCIDENT","claimAmount":500000.0,
+       "description":"Very high value accident claim","incidentDate":"2024-01-10"}'
+
+{"claimId":"CLM-002","fraudCheckPassed":false,"identityVerified":true,
+ "message":"Fraud detected: Critical fraud risk detected. Claim should be rejected.",
+ "status":"REJECTED","timestamp":"2026-07-02 12:32:09"}
 ```
 
-This will:
-- Clean previous builds
-- Compile all Java sources with Maven
-- Generate gRPC classes from .proto files
-- Create compiled classes in `target/classes/`
+Server-side orchestrator trace for the rejected claim, excerpt — the XOR gateway stops the pipeline at step 2 and step 3 never runs:
 
-**Option 2: IntelliJ IDEA**
+```
+ORCHESTRATOR: Starting Claim Processing Pipeline
+[Step 1/3] Identity Verification (SOAP Service)
+Verification Result: PASSED
+Confidence Score: 0.95
+✓ Identity verified successfully
+[Step 2/3] Fraud Detection (gRPC Service)
+❌ Claim rejected: Fraud detected (Risk: CRITICAL)
+```
 
-1. Open the project in IntelliJ IDEA
-2. Configure Java SDK (File → Project Structure → Project → SDK: Java 11)
-3. Open Maven tool window (View → Tool Windows → Maven)
-4. Execute Maven goals in order:
-   - **clean** → Wait for completion
-   - **compile** → Compiles Java sources and generates gRPC classes
-   - **package** → Creates WAR file in `target/claim-processing.war`
+## Quick Start
 
-### 3. Start Services
+Prerequisites: JDK 11+ (pom targets Java 11; full build and demo verified on JDK 21), Maven 3.6+, Apache Tomcat 9.
 
-**Start Tomcat** (for REST, SOAP, and GraphQL):
 ```bash
+git clone https://github.com/CY-HYUN/Insurance-Claim-Processing-SOA.git
+cd Insurance-Claim-Processing-SOA
+
+# 1. Build (package is required — the demo scripts load jars from the exploded WAR)
+mvn clean package
+```
+
+Then start the two servers and run the demo (Windows):
+
+```bash
+# 2. Edit TOMCAT_HOME in start-tomcat.bat / stop-tomcat.bat / build-and-deploy.bat
+#    to your Tomcat install path (default: C:\apache-tomcat-9.0.113)
+
+# 3. Deploy the WAR and start Tomcat (REST + SOAP + GraphQL on :8080)
+build-and-deploy.bat
 start-tomcat.bat
-```
 
-**Start gRPC Server** (for Fraud Detection):
-```bash
+# 4. Start the gRPC fraud-detection server (:50051) in a second terminal
 start-grpc-java.bat
-```
 
-### 4. Test the Services
-
-```bash
+# 5. Run the demo clients in a third terminal (menu: 1=SOAP 2=gRPC 3=GraphQL 4=REST 5=all)
 run-demo-java.bat
 ```
 
-**Menu Options:**
-1. Test SOAP Identity Service
-2. Test gRPC Fraud Service
-3. Test GraphQL Policy Service
-4. Test REST Claim Service
-5. Run All Tests (Complete Workflow)
-6. Exit
+Or skip the clients and drive the whole workflow with the `curl` calls shown above.
 
-## 🔧 Service Details & Implementation
+Setup notes (honest):
 
-### 1. REST - Claim Submission Service
+- `run-demo-java.bat` and `start-grpc-java.bat` prepend `C:\Program Files\Microsoft\jdk-11.0.16.101-hotspot` to `PATH` if it exists; otherwise they fall back to whatever `java` is on your `PATH` (JDK 11+ required).
+- `mvn clean package` alone is enough to build without Tomcat; the WAR lands in `target/claim-processing.war` and can be copied to any Tomcat `webapps/` folder by hand.
+- `settings.xml` in the repo root is optional — use `mvn -s settings.xml clean package` if your Windows username is non-ASCII (it moves the local Maven repo to `D:/maven-repository`).
+- Ports used: 8080 (Tomcat), 50051 (gRPC).
 
-**Implementation:** `com.insurance.service.ClaimSubmissionService.java`
+## Architecture
 
-**Technology Stack:**
-- JAX-RS (Jersey 2.35) - REST framework
-- JSON format (Gson 2.10.1)
-- HTTP methods: POST, GET
-- Comprehensive error handling
+```
+Client (curl / RestClient)
+      |  POST /api/claims/submit  (REST, JSON)
+      v
+ClaimSubmissionService  ->  InsuranceClaimOrchestrator
+      |
+      |-- [1] Identity Verification -- SOAP service class      -- XOR: fail -> REJECT
+      |-- [2] Fraud Detection ------- gRPC call to :50051      -- XOR: fraud -> REJECT
+      |-- [3] Policy Validation ----- GraphQL engine           -- XOR: invalid -> REJECT
+      v
+  All pass -> APPROVED
+```
 
-**Endpoints:**
-- **POST** `/api/claims/submit` - Submit new insurance claim
-- **GET** `/api/claims/{claimId}` - Retrieve claim status
-- **GET** `/api/claims/health` - Health check endpoint
+- **REST** (`ClaimSubmissionService`) receives the claim and returns the aggregated decision.
+- **SOAP** (`IdentityVerificationService`, JAX-WS) verifies identity; also exposed at `/services/IdentityVerification?wsdl` for wire-level SOAP clients.
+- **gRPC** (`FraudDetectionServer` / `FraudDetectionServiceImpl`) scores fraud risk over Protocol Buffers on port 50051 — this hop crosses the network in every run.
+- **GraphQL** (`PolicyDataFetcher` + `GraphQLServlet`) validates the policy; also exposed at `/graphql` for external queries.
 
-**Base URL:** `http://localhost:8080/claim-processing/api/claims`
+Fraud scoring is rule-based (see `FraudDetectionServiceImpl`): +0.3 if amount > $50,000, +0.4 if > $100,000, +0.2 for accident claims > $75,000, +0.25 for multi-claim history. Score >= 0.6 (HIGH/CRITICAL) trips the XOR gateway and rejects the claim.
 
----
+### Why four protocols
 
-### 2. SOAP - Identity Verification Service
+| Service | Protocol | Rationale |
+|---|---|---|
+| Claim Submission | REST (JSON) | Stateless CRUD entry point, easiest for web/mobile clients |
+| Identity Verification | SOAP (XML/WSDL) | Formal contract + type safety, the classic enterprise/insurance integration style |
+| Fraud Detection | gRPC (Protobuf) | Binary, low-latency internal call for the compute-style service |
+| Policy Validation | GraphQL | Client selects exactly the policy fields it needs, single endpoint |
 
-**Implementation:** `com.insurance.soap.IdentityVerificationService.java`
+## Endpoints (all verified live)
 
-**Technology Stack:**
-- JAX-WS (Java API for XML Web Services)
-- WSDL auto-generation
-- XML messaging format
+| Endpoint | Protocol | Verified behavior |
+|---|---|---|
+| `POST /claim-processing/api/claims/submit` | REST | Runs the full 3-gateway orchestration, returns decision JSON |
+| `GET /claim-processing/api/claims/health` | REST | `{"status":"UP","service":"ClaimSubmissionService"}` |
+| `GET /claim-processing/services/IdentityVerification?wsdl` | SOAP | Returns generated WSDL (HTTP 200) |
+| `POST /claim-processing/graphql` | GraphQL | `validatePolicy` / `policy` / `policiesByUser` queries return mock policy data |
+| `AnalyzeClaim` on `localhost:50051` | gRPC | Returns risk score, level, red flags |
 
-**Web Service Methods:**
-- **verifyIdentity(String userId, String customerName, String documentId)**
-  - Verifies customer identity against database
-  - Returns: VerificationResult (verified: boolean, message: String)
+Example GraphQL call (verified):
 
-**WSDL URL:** `http://localhost:8080/claim-processing/services/IdentityVerification?wsdl`
-
----
-
-### 3. gRPC - Fraud Detection Service
-
-**Implementation:**
-- Server: `com.insurance.grpc.FraudDetectionServer.java`
-- Service: `com.insurance.grpc.FraudDetectionServiceImpl.java`
-- Protocol Buffers: `src/main/proto/fraud_detection.proto`
-
-**Technology Stack:**
-- gRPC Java 1.58.0
-- Protocol Buffers 3.24.0
-- HTTP/2 protocol
-- Port: 50051
-
-**gRPC Methods:**
-- **AnalyzeClaim(FraudRequest) → FraudResponse**
-  - Analyzes claim data for fraud indicators
-  - Returns: riskLevel (LOW/MEDIUM/HIGH), riskScore (0.0-1.0), reason
-
-**Business Logic:**
-- Amount > $100,000 → HIGH risk
-- Amount $20,000-$100,000 → MEDIUM risk
-- Amount < $20,000 → LOW risk
-
----
-
-### 4. GraphQL - Policy Validation Service
-
-**Implementation:**
-- Schema: `src/main/resources/schema.graphql`
-- Data Fetcher: `com.insurance.graphql.PolicyDataFetcher.java`
-- Servlet: `com.insurance.graphql.GraphQLServlet.java`
-
-**Technology Stack:**
-- graphql-java 19.2
-- Schema-first approach
-- JSON request/response
-
-**GraphQL Endpoint:** `http://localhost:8080/claim-processing/graphql`
-
-**Query Example:**
 ```graphql
-query {
-  validatePolicy(policyId: "POL-001", claimAmount: 5000.0) {
-    isValid
-    coverageAmount
-    coveragePercentage
-    message
-  }
-}
+query { validatePolicy(policyId: "POL-001", claimAmount: 5000.0) {
+  policyId isValid status message coverageLimit } }
+# -> {"isValid":true,"status":"VALID","coverageLimit":50000.0}
 ```
 
----
+## Demo Clients
 
-### Service Integration Summary
+`run-demo-java.bat` runs these directly with `java -cp` (no Maven needed after packaging):
 
-| Service | Protocol | Port | Data Format | Lines of Code |
-|---------|----------|------|-------------|---------------|
-| Claim Submission | REST | 8080 | JSON | ~150 |
-| Identity Verification | SOAP | 8080 | XML | ~120 |
-| Fraud Detection | gRPC | 50051 | Protobuf | ~200 |
-| Policy Validation | GraphQL | 8080 | JSON | ~180 |
+| Menu | Class | What it exercises |
+|---|---|---|
+| 1 | `client.SoapClient` | Identity service logic (direct in-process call; use SoapUI/Postman against the WSDL for wire-level SOAP) |
+| 2 | `grpc.FraudDetectionClient` | Real gRPC call to :50051 — fraud analysis + statistics RPC |
+| 3 | `client.GraphQLClient` | HTTP POST to `/graphql` — policy queries |
+| 4 | `client.RestClient` | HTTP POST to `/api/claims/submit` — full orchestration |
+| 5 | All four in sequence | |
 
-**Total Implementation:** 23 Java files, 6 configuration files, ~1,200 lines of production code
+## Scope and Limitations (read before judging the code)
 
-## 🧑‍💻 Application Clients
+This is a university SOA course project (Télécom SudParis MSc), built to demonstrate protocol integration and orchestration patterns — not a production claims system:
 
-This project includes **4 Java application clients** for service testing and demonstration:
+- Business logic is intentionally mock: identity passes when the document ID is 8+ characters; fraud is a fixed rule table; policies are hard-coded in `PolicyDataFetcher`. No database — everything is in-memory.
+- Inside the orchestrator, the SOAP service and GraphQL engine are invoked in-process; the SOAP/GraphQL wire endpoints exist and are verified, but the orchestrator itself only crosses the network for gRPC and the inbound REST call.
+- The fraud gateway fails open: if the gRPC server on :50051 is not running, the orchestrator logs a warning and skips the fraud check (`InsuranceClaimOrchestrator.java`, lines 117-123). Start `start-grpc-java.bat` first.
+- `GET /api/claims/{claimId}` is a stub that always returns `PENDING`.
+- Windows-oriented tooling (`.bat` scripts). On Linux/macOS use `mvn clean package`, copy the WAR to Tomcat, and run the same client classes with `java -cp`.
 
-### 1. REST Client - `RestClient.java`
+## Tech Stack
 
-**Technology:** Jersey Client API 2.35
+Java 11 · Maven (WAR packaging, protobuf-maven-plugin for codegen) · Apache Tomcat 9 · Jersey 2.35 (JAX-RS) · JAX-WS RI 2.3.5 · gRPC 1.58.0 + Protocol Buffers 3.24.0 · graphql-java 19.2 · Gson 2.10.1
 
-**Functionality:**
-- Connects to REST API endpoint
-- Sends POST request with JSON payload
-- Parses JSON response
+## Documentation
 
-**Execution:**
-```bash
-mvn exec:java -Dexec.mainClass="com.insurance.client.RestClient"
-```
+Detailed docs live in [`docs/`](docs/):
 
----
+- [Architecture Overview](docs/technical-docs/Architecture_Overview.md) — design patterns, component diagram
+- [Deployment Guide](docs/technical-docs/Deployment_Guide.md) — step-by-step environment setup
+- [Service Endpoints](docs/technical-docs/Service_Endpoints.md) — full API reference with request/response examples
+- [Testing Guide](docs/technical-docs/Testing_Guide.md) — test scenarios per service
+- [Postman collection](docs/API_Documentation/Insurance_Claim_Processing.postman_collection.json)
 
-### 2. SOAP Client - `SoapClient.java`
-
-**Technology:** JAX-WS Client API
-
-**Functionality:**
-- Dynamically discovers SOAP service from WSDL
-- Invokes `verifyIdentity()` method
-- Parses XML SOAP response
-
-**Execution:**
-```bash
-mvn exec:java -Dexec.mainClass="com.insurance.client.SoapClient"
-```
-
----
-
-### 3. gRPC Client - `GrpcClient.java`
-
-**Technology:** gRPC Java Client
-
-**Functionality:**
-- Creates ManagedChannel to gRPC server
-- Builds FraudRequest using Protocol Buffers
-- Calls AnalyzeClaim() RPC method
-- Deserializes binary FraudResponse
-
-**Execution:**
-```bash
-mvn exec:java -Dexec.mainClass="com.insurance.client.GrpcClient"
-```
-
----
-
-### 4. GraphQL Client - `GraphQLClient.java`
-
-**Technology:** HTTP Client (java.net.HttpURLConnection)
-
-**Functionality:**
-- Sends POST request to GraphQL endpoint
-- Constructs GraphQL query string
-- Parses JSON response
-
-**Execution:**
-```bash
-mvn exec:java -Dexec.mainClass="com.insurance.client.GraphQLClient"
-```
-
----
-
-### 5. Orchestrator - `InsuranceClaimOrchestrator.java`
-
-**Complete Workflow Integration**
-
-**Functionality:**
-- Coordinates all 4 services in sequence
-- Implements XOR gateway logic
-- Handles errors and aggregates responses
-
-**Execution Flow:**
-1. Submit claim via REST client
-2. Verify identity via SOAP client → **XOR Gateway:** Fail → REJECT
-3. Analyze fraud via gRPC client → **XOR Gateway:** HIGH risk → REJECT
-4. Validate policy via GraphQL client → **XOR Gateway:** Invalid → REJECT
-5. If all pass → APPROVE claim
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-Insurance-Claim-Processing-SOA/
-├── src/
-│   ├── main/
-│   │   ├── java/com/insurance/
-│   │   │   ├── dto/              # Data Transfer Objects
-│   │   │   ├── service/          # REST Services
-│   │   │   ├── soap/             # SOAP Services
-│   │   │   ├── grpc/             # gRPC Services
-│   │   │   ├── graphql/          # GraphQL Services
-│   │   │   ├── client/           # Test Clients
-│   │   │   └── orchestrator/     # Service Orchestration
-│   │   ├── proto/                # Protocol Buffer definitions
-│   │   ├── resources/
-│   │   │   ├── schema.graphql
-│   │   │   └── META-INF/services.xml
-│   │   └── webapp/
-│   │       ├── WEB-INF/web.xml
-│   │       └── index.html
-├── docs/
-│   ├── technical-docs/           # Architecture and deployment guides
-│   ├── API_Documentation/        # Postman collection
-│   └── README.md
-├── pom.xml
-├── build-and-deploy.bat
-├── start-tomcat.bat
-├── stop-tomcat.bat
-├── start-grpc-java.bat
-└── run-demo-java.bat
+src/main/java/com/insurance/
+├── service/        REST claim submission (Jersey)
+├── soap/           SOAP identity verification (JAX-WS)
+├── grpc/           gRPC fraud detection server + client
+├── graphql/        GraphQL policy validation (servlet + data fetcher)
+├── orchestrator/   InsuranceClaimOrchestrator — 3 XOR gateways
+├── client/         Demo clients (REST / SOAP / gRPC / GraphQL)
+└── dto/            ClaimRequest / ClaimResponse
+src/main/proto/     fraud_detection.proto
+src/main/resources/ schema.graphql
 ```
-
-## 🧪 Test Cases
-
-### Test Case 1: APPROVED - Low Risk Claim ✅
-
-```json
-{
-  "claimId": "CLM-001",
-  "userId": "USR-123",
-  "claimType": "AUTO",
-  "claimAmount": 5000.0,
-  "description": "Minor car accident",
-  "incidentDate": "2024-01-15"
-}
-```
-
-**Workflow Execution:**
-1. Identity Verification (SOAP): ✅ Verified
-2. Fraud Detection (gRPC): ✅ LOW risk ($5,000 < $20,000 threshold)
-3. Policy Validation (GraphQL): ✅ Valid policy (50% coverage)
-4. **Final Decision:** ✅ **APPROVED**
-
----
-
-### Test Case 2: REJECTED - High Fraud Risk ❌
-
-```json
-{
-  "claimId": "CLM-002",
-  "userId": "USR-456",
-  "claimType": "ACCIDENT",
-  "claimAmount": 500000.0,
-  "description": "Very high value accident claim",
-  "incidentDate": "2024-01-10"
-}
-```
-
-**Workflow Execution:**
-1. Identity Verification (SOAP): ✅ Verified
-2. Fraud Detection (gRPC): ❌ **HIGH risk** ($500,000 > $100,000) → **XOR Gateway triggered**
-3. Policy Validation (GraphQL): ⏭️ Skipped (early termination)
-4. **Final Decision:** ❌ **REJECTED** - Fraud detected
-
----
-
-### Test Case 3: REJECTED - Identity Verification Failed ❌
-
-```json
-{
-  "claimId": "CLM-003",
-  "userId": "USR-999",
-  "claimType": "HEALTH",
-  "claimAmount": 15000.0,
-  "description": "Medical expenses claim",
-  "incidentDate": "2024-01-20"
-}
-```
-
-**Workflow Execution:**
-1. Identity Verification (SOAP): ❌ **Failed** (User not found) → **XOR Gateway triggered**
-2. Fraud Detection (gRPC): ⏭️ Skipped
-3. Policy Validation (GraphQL): ⏭️ Skipped
-4. **Final Decision:** ❌ **REJECTED** - Identity verification failed
-
-## 💻 Technology Stack
-
-**Core Technologies:**
-- **Java 11** - Development platform
-- **Apache Maven 3.6+** - Build automation
-- **Apache Tomcat 9.0.113** - Web application server
-
-**Service Implementation:**
-- **JAX-RS (Jersey 2.35)** - REST API framework
-- **JAX-WS** - SOAP web services
-- **gRPC Java 1.58.0** - High-performance RPC
-- **Protocol Buffers 3.24.0** - Binary serialization
-- **graphql-java 19.2** - GraphQL implementation
-
-**Data Handling:**
-- **Gson 2.10.1** - JSON parsing
-- **XML** - SOAP message format
-- **Protobuf** - gRPC binary format
-
-## 🔍 Workflow Orchestration & Gateway Logic
-
-### XOR Gateway Implementation
-
-**XOR Gateway 1: Identity Verification**
-```java
-// File: InsuranceClaimOrchestrator.java
-VerificationResult verificationResult = soapClient.verifyIdentity(userId, customerName, documentId);
-
-if (!verificationResult.isVerified()) {
-    // Identity Failed → REJECT immediately
-    return new ClaimResponse("REJECTED", "Identity verification failed", claimId);
-}
-// Identity OK → Continue to next step
-```
-
-**XOR Gateway 2: Fraud Detection**
-```java
-FraudResponse fraudResult = grpcClient.analyzeClaim(fraudRequest);
-
-if (fraudResult.getIsFraudulent() || fraudResult.getRiskLevel() == RiskLevel.HIGH) {
-    // HIGH risk → REJECT immediately
-    return new ClaimResponse("REJECTED", "High fraud risk detected", claimId);
-}
-// LOW/MEDIUM risk → Continue to next step
-```
-
-**XOR Gateway 3: Policy Validation**
-```java
-PolicyValidation policyValidation = graphqlClient.validatePolicy(policyId, claimAmount);
-
-if (!policyValidation.isValid()) {
-    // Invalid policy → REJECT
-    return new ClaimResponse("REJECTED", policyValidation.getMessage(), claimId);
-}
-// Valid policy → APPROVE claim
-return new ClaimResponse("APPROVED", "All verifications passed", claimId);
-```
-
-## 🛠️ Troubleshooting
-
-### Tomcat not starting
-- Check if port 8080 is available
-- Verify TOMCAT_HOME path in batch files
-- Check Tomcat logs in `%TOMCAT_HOME%\logs\`
-
-### gRPC server connection failed
-- Ensure gRPC server is running (`start-grpc-java.bat`)
-- Check if port 50051 is available
-- Verify firewall settings
-
-### Maven build fails
-- Check internet connection (Maven downloads dependencies)
-- Clear Maven cache: `mvn clean`
-- Update Maven: `mvn -version`
-
-## 🎓 Key Learnings & Takeaways
-
-### 1. Multi-Protocol Service Implementation
-- REST API design with JAX-RS
-- SOAP web services with WSDL
-- gRPC with Protocol Buffers
-- GraphQL schema design
-
-### 2. Service Orchestration Patterns
-- Sequential service coordination
-- XOR gateway decision-based routing
-- Early termination optimization (fail-fast)
-- Error propagation and aggregation
-
-### 3. Service Technology Selection
-- **REST:** Simple CRUD operations, web/mobile clients
-- **SOAP:** Enterprise security, formal contracts
-- **gRPC:** High-performance, low-latency, internal microservices
-- **GraphQL:** Complex data relationships, flexible queries
-
-### 4. SOA Design Principles
-- **Service Reusability:** Each service callable independently
-- **Service Autonomy:** Services manage own data and logic
-- **Service Loose Coupling:** Protocol-agnostic orchestration
-- **Service Contract:** WSDL, .proto, schema.graphql define interfaces
-
-### Real-World Applications
-
-**Insurance Industry:**
-- Multi-channel claim submission (web, mobile, partner APIs)
-- Real-time fraud detection
-- Legacy system integration (SOAP for mainframe systems)
-- Modern API gateway patterns (GraphQL for mobile apps)
-
-**Enterprise Architecture:**
-- Microservices communication patterns
-- API gateway and service mesh concepts
-- Event-driven architecture foundations
-- Cloud-native application design
-
-## 📊 Project Statistics
-
-- **Development Time:** 5 weeks
-- **Lines of Code:** ~1,200 (23 Java files)
-- **Documentation:** 10+ markdown files
-- **Automation Scripts:** 16 batch files
-- **Test Coverage:** 4 application clients, Postman collection
-
-**Technologies Demonstrated:**
-- REST (Jersey 2.35), SOAP (JAX-WS), gRPC (1.58.0), GraphQL (19.2)
-- Java 11, Maven, Apache Tomcat 9.0.113
-- Protocol Buffers 3.24.0, JSON (Gson 2.10.1), XML
-
-## 📄 License
-
-This project is for educational and portfolio purposes, demonstrating professional-grade Service Oriented Architecture implementation.
-
-**Acknowledgments:**
-- Official documentation: Oracle Java EE, gRPC, GraphQL, Apache Jersey
-- Service-oriented computing best practices
-
----
-
-**🎉 Complete SOA Implementation demonstrating REST, SOAP, gRPC, and GraphQL integration 🎉**
-
-**Quick Start:**
-```bash
-# 1. Start servers
-.\start-tomcat.bat        # Terminal 1
-.\start-grpc-java.bat     # Terminal 2
-
-# 2. Run demo
-.\run-demo-java.bat       # Terminal 3 → Option 5: Run All Tests
-```
-
----
-
-*Comprehensive demonstration of Service Oriented Architecture principles, multi-protocol service implementation, and professional software development practices.*

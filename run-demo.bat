@@ -47,7 +47,7 @@ goto END
 :GRPC
 echo.
 echo === Running gRPC Client ===
-echo Make sure gRPC server is running (start-grpc-server.bat)
+echo Make sure gRPC server is running (start-grpc-java.bat)
 echo.
 pause
 call "%MVN_CMD%" exec:java -Dexec.mainClass="com.insurance.client.GrpcClient"

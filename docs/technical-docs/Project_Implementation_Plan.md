@@ -358,8 +358,8 @@ run-demo.bat
 C:\apache-tomcat-9.0.113\bin\startup.bat
 
 # Terminal 2: Start gRPC Server (VSCode terminal recommended)
-cd "D:\Study\Github\Insurance-Claim-Processing-SOA-NEW"
-start-grpc-server.bat
+cd Insurance-Claim-Processing-SOA
+start-grpc-java.bat
 
 # Terminal 3: Run Java Orchestrator Demo
 mvn exec:java -Dexec.mainClass="com.insurance.orchestrator.InsuranceClaimOrchestrator"
@@ -479,6 +479,3 @@ netstat -ano | findstr :50051
 ---
 
 **Note**: This document is for team collaboration. For technical implementation details, see individual documentation files in the `/docs` folder.
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
