@@ -2,11 +2,13 @@
 
 A Java 11 Service-Oriented Architecture demo: a single insurance-claim workflow orchestrated across **four service protocols**, with three XOR fail-fast gateways deciding APPROVED vs REJECTED.
 
+**Team and my role.** A two-person project for the Service-Oriented Computing course at Télécom SudParis (January 2025). I built the four services (REST, SOAP, gRPC, GraphQL), the Java orchestrator, the build and deployment scripts and the technical docs. My teammate, Thijmen Welberg, did the BPMN workflow in Flowable, the slides and the live demo. Source: `docs/technical-docs/Project_Implementation_Plan.md` (role division) and `docs/Service-Oriented Computing Project.pptx`.
+
 ![Java](https://img.shields.io/badge/Java-11-orange)
 ![Maven](https://img.shields.io/badge/Build-Maven-blue)
 ![Protocols](https://img.shields.io/badge/Protocols-REST%20%7C%20SOAP%20%7C%20gRPC%20%7C%20GraphQL-green)
 
-## Verified Results
+## What is in the build
 
 - **4 protocols in one build**: REST (Jersey 2.35), SOAP (JAX-WS), gRPC (1.58.0 / Protobuf 3.24.0), GraphQL (graphql-java 19.2) — one Maven WAR on Tomcat plus a standalone gRPC server
 - **3 XOR gateways** (identity, fraud, policy) with early termination — one `POST` triggers the full pipeline
@@ -49,7 +51,7 @@ Confidence Score: 0.95
 
 ## Quick Start
 
-Prerequisites: JDK 11+ (pom targets Java 11; full build and demo verified on JDK 21), Maven 3.6+, Apache Tomcat 9.
+Prerequisites: JDK 11+ (pom targets Java 11; the outputs above were captured on 2026-07-02), Maven 3.6+, Apache Tomcat 9.
 
 ```bash
 git clone https://github.com/CY-HYUN/Insurance-Claim-Processing-SOA.git
@@ -66,6 +68,7 @@ Then start the two servers and run the demo (Windows):
 #    to your Tomcat install path (default: C:\apache-tomcat-9.0.113)
 
 # 3. Deploy the WAR and start Tomcat (REST + SOAP + GraphQL on :8080)
+#    (build-and-deploy.bat runs the Maven build again before copying the WAR)
 build-and-deploy.bat
 start-tomcat.bat
 
@@ -80,7 +83,7 @@ Or skip the clients and drive the whole workflow with the `curl` calls shown abo
 
 Setup notes (honest):
 
-- `run-demo-java.bat` and `start-grpc-java.bat` prepend `C:\Program Files\Microsoft\jdk-11.0.16.101-hotspot` to `PATH` if it exists; otherwise they fall back to whatever `java` is on your `PATH` (JDK 11+ required).
+- `run-demo-java.bat` and `start-grpc-java.bat` always set `JAVA_HOME` to `C:\Program Files\Microsoft\jdk-11.0.16.101-hotspot` and put its `bin` first on `PATH`. If that folder does not exist, `java` still resolves to whatever JDK is on your `PATH` (JDK 11+ required); edit line 10 of both scripts to point at your JDK.
 - `mvn clean package` alone is enough to build without Tomcat; the WAR lands in `target/claim-processing.war` and can be copied to any Tomcat `webapps/` folder by hand.
 - `settings.xml` in the repo root is optional — use `mvn -s settings.xml clean package` if your Windows username is non-ASCII (it moves the local Maven repo to `D:/maven-repository`).
 - Ports used: 8080 (Tomcat), 50051 (gRPC).
@@ -113,10 +116,10 @@ Fraud scoring is rule-based (see `FraudDetectionServiceImpl`): +0.3 if amount > 
 |---|---|---|
 | Claim Submission | REST (JSON) | Stateless CRUD entry point, easiest for web/mobile clients |
 | Identity Verification | SOAP (XML/WSDL) | Formal contract + type safety, the classic enterprise/insurance integration style |
-| Fraud Detection | gRPC (Protobuf) | Binary, low-latency internal call for the compute-style service |
+| Fraud Detection | gRPC (Protobuf) | Binary, schema-typed internal call for the compute-style service (latency was not measured here) |
 | Policy Validation | GraphQL | Client selects exactly the policy fields it needs, single endpoint |
 
-## Endpoints (all verified live)
+## Endpoints (checked live on 2026-07-02)
 
 | Endpoint | Protocol | Verified behavior |
 |---|---|---|
@@ -152,7 +155,9 @@ This is a university SOA course project (Télécom SudParis MSc), built to demon
 
 - Business logic is intentionally mock: identity passes when the document ID is 8+ characters; fraud is a fixed rule table; policies are hard-coded in `PolicyDataFetcher`. No database — everything is in-memory.
 - Inside the orchestrator, the SOAP service and GraphQL engine are invoked in-process; the SOAP/GraphQL wire endpoints exist and are verified, but the orchestrator itself only crosses the network for gRPC and the inbound REST call.
+- The orchestrator fills some inputs with fixed mock values, so not every rule can fire from `POST /submit`. The identity call always sends document ID `ID12345678` (10 characters), so gateway 1 always passes. The fraud call always sends user history `FIRST_TIME_CLAIM`, so the multi-claim rule never adds its +0.25. Policy checks always use `POL-001` (coverage $50,000). See `InsuranceClaimOrchestrator.java` lines 74-78, 96-103 and 132-135.
 - The fraud gateway fails open: if the gRPC server on :50051 is not running, the orchestrator logs a warning and skips the fraud check (`InsuranceClaimOrchestrator.java`, lines 117-123). Start `start-grpc-java.bat` first.
+- No automated tests (there is no `src/test/`); the checks are the demo clients, the `curl` calls above and the Postman collection.
 - `GET /api/claims/{claimId}` is a stub that always returns `PENDING`.
 - Windows-oriented tooling (`.bat` scripts). On Linux/macOS use `mvn clean package`, copy the WAR to Tomcat, and run the same client classes with `java -cp`.
 
@@ -164,7 +169,7 @@ Java 11 · Maven (WAR packaging, protobuf-maven-plugin for codegen) · Apache To
 
 Detailed docs live in [`docs/`](docs/):
 
-- [Architecture Overview](docs/technical-docs/Architecture_Overview.md) — design patterns, component diagram
+- [Architecture Overview](docs/technical-docs/Architecture_Overview.md) — design patterns, component diagram (its diagram says the three checks run in parallel; the code runs them one after another, as shown above)
 - [Deployment Guide](docs/technical-docs/Deployment_Guide.md) — step-by-step environment setup
 - [Service Endpoints](docs/technical-docs/Service_Endpoints.md) — full API reference with request/response examples
 - [Testing Guide](docs/technical-docs/Testing_Guide.md) — test scenarios per service

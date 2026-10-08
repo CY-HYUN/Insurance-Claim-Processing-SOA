@@ -556,7 +556,7 @@ Document ID: ID-789456123
 
 Verification Result:
 - Verified: true
-- Confidence: 95.5%
+- Confidence: 0.95 (the mock returns 0.95 or 0.45)
 - Message: Identity verified successfully. High confidence match.
 
 ✓ SOAP test completed successfully

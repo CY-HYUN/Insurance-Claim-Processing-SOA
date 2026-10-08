@@ -222,10 +222,9 @@ public VerificationResult verifyIdentity(
 }
 ```
 
-**Verification Logic**:
-- **High Confidence (90-100%)**: All details match perfectly
-- **Medium Confidence (70-89%)**: Minor discrepancies
-- **Low Confidence (< 70%)**: Significant mismatches → Failed verification
+**Verification Logic** (mock): the document ID is accepted if it has at least 8 characters. The
+confidence is then 0.95; otherwise verification fails with 0.45. There are no other confidence
+levels (`IdentityVerificationService.java:47-48`).
 
 ---
 

@@ -41,7 +41,7 @@ The Insurance Claim Processing system implements a **Service-Oriented Architectu
 │          InsuranceClaimOrchestrator.java                         │
 │                                                                   │
 │  ┌──────────────────────────────────────────────────────────┐  │
-│  │  Coordinates 3 parallel service calls:                    │  │
+│  │  Calls 3 services in order, stops at first failure:       │  │
 │  │  1. Identity Verification (SOAP)                          │  │
 │  │  2. Fraud Detection (gRPC)                                │  │
 │  │  3. Policy Validation (GraphQL)                           │  │
